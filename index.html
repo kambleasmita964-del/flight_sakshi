@@ -1,0 +1,979 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Flight Reservation System</title>
+
+<style>
+body {
+    margin: 0;
+    font-family: Arial, sans-serif;
+    background: #f2f6fa;
+}
+
+header {
+    background: #123c69;
+    color: white;
+    text-align: center;
+    padding: 25px;
+}
+
+nav {
+    background: #092b4c;
+    text-align: center;
+    padding: 12px;
+}
+
+nav button {
+    background: #092b4c;
+    color: white;
+    border: 1px solid white;
+    padding: 10px 15px;
+    margin: 4px;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+nav button:hover {
+    background: #1d5d91;
+}
+
+.container {
+    width: 90%;
+    max-width: 1100px;
+    margin: 25px auto;
+}
+
+.page {
+    display: none;
+}
+
+.page.active {
+    display: block;
+}
+
+.card {
+    background: white;
+    padding: 25px;
+    margin-bottom: 20px;
+    border-radius: 10px;
+    box-shadow: 0 2px 10px #ccc;
+}
+
+h2 {
+    color: #123c69;
+}
+
+table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 15px;
+}
+
+th {
+    background: #123c69;
+    color: white;
+}
+
+th, td {
+    padding: 10px;
+    border: 1px solid #ccc;
+    text-align: center;
+}
+
+input, select {
+    width: 100%;
+    padding: 10px;
+    margin: 8px 0 15px;
+    border: 1px solid #aaa;
+    border-radius: 5px;
+    box-sizing: border-box;
+}
+
+label {
+    font-weight: bold;
+}
+
+.btn {
+    background: #123c69;
+    color: white;
+    border: none;
+    padding: 11px 18px;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+.btn:hover {
+    background: #092b4c;
+}
+
+.success {
+    background: #d4edda;
+    color: #155724;
+    padding: 15px;
+    margin: 10px 0;
+    border-radius: 5px;
+}
+
+.error {
+    background: #f8d7da;
+    color: #721c24;
+    padding: 15px;
+    margin: 10px 0;
+    border-radius: 5px;
+}
+
+footer {
+    background: #092b4c;
+    color: white;
+    text-align: center;
+    padding: 15px;
+    margin-top: 40px;
+}
+</style>
+</head>
+
+<body>
+
+<header>
+    <h1>✈️ Flight Reservation System</h1>
+    <p>Data Structures Project</p>
+</header>
+
+<nav>
+    <button onclick="showPage('home')">Home</button>
+    <button onclick="showPage('flights')">Flights</button>
+    <button onclick="showPage('register')">Passenger Registration</button>
+    <button onclick="showPage('search')">Search Flights</button>
+    <button onclick="showPage('book')">Book Flight</button>
+    <button onclick="showPage('details')">Booking Details</button>
+    <button onclick="showPage('cancel')">Cancel Booking</button>
+    <button onclick="showPage('about')">About</button>
+</nav>
+
+<div class="container">
+
+<!-- HOME -->
+<div id="home" class="page active">
+
+    <div class="card">
+        <h2>Welcome to Flight Reservation System</h2>
+
+        <p>
+            This system allows users to view flights,
+            search flights, register passengers,
+            book flights and cancel bookings.
+        </p>
+
+        <button class="btn" onclick="showPage('flights')">
+            View Flights
+        </button>
+    </div>
+
+    <div class="card">
+        <h2>Features</h2>
+
+        <ul>
+            <li>View Available Flights</li>
+            <li>Passenger Registration</li>
+            <li>Search Flights</li>
+            <li>Flight Booking</li>
+            <li>Booking Details</li>
+            <li>Cancel Booking</li>
+        </ul>
+    </div>
+
+</div>
+
+
+<!-- FLIGHTS -->
+<div id="flights" class="page">
+
+    <div class="card">
+
+        <h2>Available Flights</h2>
+
+        <button class="btn" onclick="sortFlights()">
+            Sort By Fare
+        </button>
+
+        <div id="flightList"></div>
+
+    </div>
+
+</div>
+
+
+<!-- REGISTER -->
+<div id="register" class="page">
+
+    <div class="card">
+
+        <h2>Passenger Registration</h2>
+
+        <div id="registerMessage"></div>
+
+        <form onsubmit="registerPassenger(event)">
+
+            <label>Name</label>
+            <input type="text" id="name" required>
+
+            <label>Age</label>
+            <input type="number" id="age" required>
+
+            <label>Gender</label>
+            <select id="gender" required>
+                <option value="">Select Gender</option>
+                <option>Male</option>
+                <option>Female</option>
+                <option>Other</option>
+            </select>
+
+            <label>Phone</label>
+            <input type="text" id="phone"
+                   pattern="[0-9]{10}"
+                   required>
+
+            <label>Email</label>
+            <input type="email" id="email" required>
+
+            <label>Address</label>
+            <input type="text" id="address" required>
+
+            <button class="btn" type="submit">
+                Register
+            </button>
+
+        </form>
+
+    </div>
+
+</div>
+
+
+<!-- SEARCH -->
+<div id="search" class="page">
+
+    <div class="card">
+
+        <h2>Search Flights</h2>
+
+        <label>From</label>
+
+        <select id="from">
+            <option value="">Select Source</option>
+            <option>Pune</option>
+            <option>Delhi</option>
+            <option>Mumbai</option>
+            <option>Bangalore</option>
+        </select>
+
+        <label>To</label>
+
+        <select id="to">
+            <option value="">Select Destination</option>
+            <option>Delhi</option>
+            <option>Mumbai</option>
+            <option>Bangalore</option>
+            <option>Goa</option>
+        </select>
+
+        <button class="btn" onclick="searchFlight()">
+            Search
+        </button>
+
+        <div id="searchResult"></div>
+
+    </div>
+
+</div>
+
+
+<!-- BOOK -->
+<div id="book" class="page">
+
+    <div class="card">
+
+        <h2>Book Flight</h2>
+
+        <div id="bookMessage"></div>
+
+        <label>Select Flight</label>
+
+        <select id="bookFlight">
+        </select>
+
+        <label>Passenger Name</label>
+
+        <input type="text" id="bookName">
+
+        <label>Phone Number</label>
+
+        <input type="text" id="bookPhone">
+
+        <button class="btn" onclick="bookFlight()">
+            Confirm Booking
+        </button>
+
+    </div>
+
+</div>
+
+
+<!-- DETAILS -->
+<div id="details" class="page">
+
+    <div class="card">
+
+        <h2>Booking Details</h2>
+
+        <div id="bookingList"></div>
+
+    </div>
+
+</div>
+
+
+<!-- CANCEL -->
+<div id="cancel" class="page">
+
+    <div class="card">
+
+        <h2>Cancel Booking</h2>
+
+        <div id="cancelMessage"></div>
+
+        <label>Booking ID</label>
+
+        <input type="text" id="cancelId">
+
+        <button class="btn" onclick="cancelBooking()">
+            Cancel Booking
+        </button>
+
+    </div>
+
+</div>
+
+
+<!-- ABOUT -->
+<div id="about" class="page">
+
+    <div class="card">
+
+        <h2>About Project</h2>
+
+        <p><b>Project:</b> Flight Reservation System</p>
+
+        <p><b>Data Structures:</b> List and Dictionary</p>
+
+        <p><b>Algorithms:</b> Linear Search and Bubble Sort</p>
+
+        <p>
+            This project demonstrates flight searching,
+            passenger registration, booking and cancellation.
+        </p>
+
+    </div>
+
+</div>
+
+</div>
+
+
+<footer>
+Flight Reservation System | Data Structures Project
+</footer>
+
+
+<script>
+
+/* ===============================
+   FLIGHT DATA
+================================ */
+
+let flights = [
+    {
+        number: 101,
+        airline: "Air India",
+        from: "Pune",
+        to: "Delhi",
+        fare: 4500,
+        seats: 5
+    },
+
+    {
+        number: 102,
+        airline: "IndiGo",
+        from: "Delhi",
+        to: "Mumbai",
+        fare: 2500,
+        seats: 4
+    },
+
+    {
+        number: 103,
+        airline: "SpiceJet",
+        from: "Pune",
+        to: "Mumbai",
+        fare: 3500,
+        seats: 6
+    },
+
+    {
+        number: 104,
+        airline: "Vistara",
+        from: "Delhi",
+        to: "Mumbai",
+        fare: 3000,
+        seats: 3
+    }
+];
+
+
+let passengers = [];
+let bookings = [];
+
+
+/* ===============================
+   PAGE NAVIGATION
+================================ */
+
+function showPage(pageName) {
+
+    let pages = document.getElementsByClassName("page");
+
+    for (let i = 0; i < pages.length; i++) {
+        pages[i].classList.remove("active");
+    }
+
+    document.getElementById(pageName).classList.add("active");
+
+    if (pageName === "flights") {
+        displayFlights();
+    }
+
+    if (pageName === "book") {
+        loadBookingFlights();
+    }
+
+    if (pageName === "details") {
+        displayBookings();
+    }
+
+}
+
+
+/* ===============================
+   DISPLAY FLIGHTS
+================================ */
+
+function displayFlights(data = flights) {
+
+    let html = `
+    <table>
+
+    <tr>
+        <th>Flight No.</th>
+        <th>Airline</th>
+        <th>From</th>
+        <th>To</th>
+        <th>Fare</th>
+        <th>Seats</th>
+    </tr>
+    `;
+
+    for (let i = 0; i < data.length; i++) {
+
+        html += `
+        <tr>
+            <td>${data[i].number}</td>
+            <td>${data[i].airline}</td>
+            <td>${data[i].from}</td>
+            <td>${data[i].to}</td>
+            <td>₹${data[i].fare}</td>
+            <td>${data[i].seats}</td>
+        </tr>
+        `;
+    }
+
+    html += "</table>";
+
+    document.getElementById("flightList").innerHTML = html;
+}
+
+
+/* ===============================
+   BUBBLE SORT
+================================ */
+
+function sortFlights() {
+
+    for (let i = 0; i < flights.length - 1; i++) {
+
+        for (let j = 0; j < flights.length - i - 1; j++) {
+
+            if (flights[j].fare > flights[j + 1].fare) {
+
+                let temp = flights[j];
+
+                flights[j] = flights[j + 1];
+
+                flights[j + 1] = temp;
+            }
+        }
+    }
+
+    displayFlights();
+
+    alert("Flights sorted by fare!");
+}
+
+
+/* ===============================
+   PASSENGER REGISTRATION
+================================ */
+
+function registerPassenger(event) {
+
+    event.preventDefault();
+
+    let passenger = {
+
+        id: "P" + Math.floor(Math.random() * 9000 + 1000),
+
+        name: document.getElementById("name").value,
+
+        age: document.getElementById("age").value,
+
+        gender: document.getElementById("gender").value,
+
+        phone: document.getElementById("phone").value,
+
+        email: document.getElementById("email").value,
+
+        address: document.getElementById("address").value
+    };
+
+    passengers.push(passenger);
+
+    document.getElementById("registerMessage").innerHTML = `
+        <div class="success">
+            Passenger Registered Successfully!<br><br>
+            Passenger ID: <b>${passenger.id}</b>
+        </div>
+    `;
+
+    document.querySelector("#register form").reset();
+}
+
+
+/* ===============================
+   SEARCH FLIGHT
+   LINEAR SEARCH
+================================ */
+
+function searchFlight() {
+
+    let from = document.getElementById("from").value;
+
+    let to = document.getElementById("to").value;
+
+    let result = document.getElementById("searchResult");
+
+
+    if (from === "" || to === "") {
+
+        result.innerHTML = `
+            <div class="error">
+                Please select From and To.
+            </div>
+        `;
+
+        return;
+    }
+
+
+    let found = [];
+
+
+    for (let i = 0; i < flights.length; i++) {
+
+        if (
+            flights[i].from === from &&
+            flights[i].to === to
+        ) {
+
+            found.push(flights[i]);
+        }
+    }
+
+
+    if (found.length === 0) {
+
+        result.innerHTML = `
+            <div class="error">
+                No flight found.
+            </div>
+        `;
+
+        return;
+    }
+
+
+    let html = `
+    <table>
+
+    <tr>
+        <th>Flight</th>
+        <th>Airline</th>
+        <th>From</th>
+        <th>To</th>
+        <th>Fare</th>
+        <th>Seats</th>
+    </tr>
+    `;
+
+
+    for (let i = 0; i < found.length; i++) {
+
+        html += `
+        <tr>
+            <td>${found[i].number}</td>
+            <td>${found[i].airline}</td>
+            <td>${found[i].from}</td>
+            <td>${found[i].to}</td>
+            <td>₹${found[i].fare}</td>
+            <td>${found[i].seats}</td>
+        </tr>
+        `;
+    }
+
+
+    html += "</table>";
+
+    result.innerHTML = html;
+}
+
+
+/* ===============================
+   LOAD BOOKING FLIGHTS
+================================ */
+
+function loadBookingFlights() {
+
+    let select = document.getElementById("bookFlight");
+
+    select.innerHTML = `<option value="">Select Flight</option>`;
+
+
+    for (let i = 0; i < flights.length; i++) {
+
+        if (flights[i].seats > 0) {
+
+            select.innerHTML += `
+            <option value="${flights[i].number}">
+                ${flights[i].number} -
+                ${flights[i].airline} -
+                ${flights[i].from} to ${flights[i].to} -
+                ₹${flights[i].fare} -
+                ${flights[i].seats} seats
+            </option>
+            `;
+        }
+    }
+}
+
+
+/* ===============================
+   BOOK FLIGHT
+================================ */
+
+function bookFlight() {
+
+    let flightNumber =
+        document.getElementById("bookFlight").value;
+
+    let name =
+        document.getElementById("bookName").value.trim();
+
+    let phone =
+        document.getElementById("bookPhone").value.trim();
+
+    let message =
+        document.getElementById("bookMessage");
+
+
+    if (flightNumber === "") {
+
+        message.innerHTML = `
+        <div class="error">
+            Please select a flight.
+        </div>`;
+
+        return;
+    }
+
+
+    if (name === "" || phone === "") {
+
+        message.innerHTML = `
+        <div class="error">
+            Please enter passenger name and phone number.
+        </div>`;
+
+        return;
+    }
+
+
+    let selectedFlight = null;
+
+
+    for (let i = 0; i < flights.length; i++) {
+
+        if (flights[i].number == flightNumber) {
+
+            selectedFlight = flights[i];
+
+            break;
+        }
+    }
+
+
+    if (selectedFlight.seats <= 0) {
+
+        message.innerHTML = `
+        <div class="error">
+            No seats available.
+        </div>`;
+
+        return;
+    }
+
+
+    selectedFlight.seats--;
+
+
+    let booking = {
+
+        id: "B" + Math.floor(Math.random() * 90000 + 10000),
+
+        name: name,
+
+        phone: phone,
+
+        flight: selectedFlight.number,
+
+        airline: selectedFlight.airline,
+
+        from: selectedFlight.from,
+
+        to: selectedFlight.to,
+
+        fare: selectedFlight.fare
+    };
+
+
+    bookings.push(booking);
+
+
+    message.innerHTML = `
+    <div class="success">
+
+        <b>Booking Successful!</b><br><br>
+
+        Booking ID:
+        <b>${booking.id}</b><br>
+
+        Passenger:
+        ${booking.name}<br>
+
+        Flight:
+        ${booking.flight}<br>
+
+        Airline:
+        ${booking.airline}<br>
+
+        Route:
+        ${booking.from} → ${booking.to}<br>
+
+        Fare:
+        ₹${booking.fare}
+
+    </div>
+    `;
+
+
+    document.getElementById("bookName").value = "";
+
+    document.getElementById("bookPhone").value = "";
+
+    loadBookingFlights();
+}
+
+
+/* ===============================
+   DISPLAY BOOKINGS
+================================ */
+
+function displayBookings() {
+
+    let container =
+        document.getElementById("bookingList");
+
+
+    if (bookings.length === 0) {
+
+        container.innerHTML = `
+        <div class="info">
+            No bookings available.
+        </div>`;
+
+        return;
+    }
+
+
+    let html = `
+    <table>
+
+    <tr>
+        <th>Booking ID</th>
+        <th>Passenger</th>
+        <th>Phone</th>
+        <th>Flight</th>
+        <th>Airline</th>
+        <th>Route</th>
+        <th>Fare</th>
+    </tr>
+    `;
+
+
+    for (let i = 0; i < bookings.length; i++) {
+
+        html += `
+        <tr>
+
+            <td>${bookings[i].id}</td>
+
+            <td>${bookings[i].name}</td>
+
+            <td>${bookings[i].phone}</td>
+
+            <td>${bookings[i].flight}</td>
+
+            <td>${bookings[i].airline}</td>
+
+            <td>
+                ${bookings[i].from}
+                →
+                ${bookings[i].to}
+            </td>
+
+            <td>₹${bookings[i].fare}</td>
+
+        </tr>
+        `;
+    }
+
+
+    html += "</table>";
+
+    container.innerHTML = html;
+}
+
+
+/* ===============================
+   CANCEL BOOKING
+================================ */
+
+function cancelBooking() {
+
+    let id =
+        document.getElementById("cancelId")
+        .value
+        .trim();
+
+
+    let message =
+        document.getElementById("cancelMessage");
+
+
+    if (id === "") {
+
+        message.innerHTML = `
+        <div class="error">
+            Please enter Booking ID.
+        </div>`;
+
+        return;
+    }
+
+
+    let index = -1;
+
+
+    for (let i = 0; i < bookings.length; i++) {
+
+        if (bookings[i].id === id) {
+
+            index = i;
+
+            break;
+        }
+    }
+
+
+    if (index === -1) {
+
+        message.innerHTML = `
+        <div class="error">
+            Booking ID not found.
+        </div>`;
+
+        return;
+    }
+
+
+    let flightNumber =
+        bookings[index].flight;
+
+
+    for (let i = 0; i < flights.length; i++) {
+
+        if (flights[i].number == flightNumber) {
+
+            flights[i].seats++;
+
+            break;
+        }
+    }
+
+
+    bookings.splice(index, 1);
+
+
+    message.innerHTML = `
+    <div class="success">
+        Booking <b>${id}</b>
+        cancelled successfully.
+    </div>
+    `;
+
+
+    document.getElementById("cancelId").value = "";
+}
+
+
+/* ===============================
+   START APPLICATION
+================================ */
+
+displayFlights();
+
+loadBookingFlights();
+
+</script>
+
+</body>
+</html>
